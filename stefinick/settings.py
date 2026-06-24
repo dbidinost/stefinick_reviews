@@ -13,7 +13,10 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(","
     "healthcheck.railway.app",
     ".railway.app",
 ]
-CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if h not in ("localhost", "127.0.0.1")]
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{h}" if not h.startswith(".") else f"https://*{h}"
+    for h in ALLOWED_HOSTS if h not in ("localhost", "127.0.0.1")
+]
 
 
 INSTALLED_APPS = [
