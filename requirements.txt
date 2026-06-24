@@ -1,0 +1,8 @@
+django>=6.0
+psycopg[binary]
+whitenoise
+django-htmx
+requests
+Pillow
+gunicorn
+python-dotenv

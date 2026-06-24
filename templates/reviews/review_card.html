@@ -1,0 +1,64 @@
+{% load review_tags %}
+<div class="bg-gray-900 rounded-lg p-5" id="review-{{ review.id }}">
+  <!-- Review header -->
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-3">
+      <a href="/accounts/profile/{{ review.author.username }}/"
+        class="flex items-center gap-2 hover:text-brand">
+        {% if review.author.avatar %}
+          <img src="{{ review.author.avatar.url }}" alt="{{ review.author.username }}"
+            class="w-8 h-8 rounded-full object-cover">
+        {% else %}
+          <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-sm font-semibold">
+            {{ review.author.username|first|upper }}
+          </div>
+        {% endif %}
+        <span class="font-medium text-sm">{{ review.author.username }}</span>
+      </a>
+      <span class="text-yellow-400 font-semibold">{{ review.rating_display }}</span>
+    </div>
+    <span class="text-gray-600 text-xs">{{ review.created_at|date:"N j, Y" }}</span>
+  </div>
+
+  <!-- Review text -->
+  <p class="text-gray-200 text-sm leading-relaxed">{{ review.text }}</p>
+
+  <!-- Actions row -->
+  <div class="flex items-center gap-4 mt-4">
+    <!-- Like button (HTMX) -->
+    {% with liked=review|user_liked:request.user like_count=review.like_set.count %}
+    <div id="like-{{ review.id }}">
+      <button
+        hx-post="/reviews/{{ review.id }}/like/"
+        hx-target="#like-{{ review.id }}"
+        hx-swap="outerHTML"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        class="flex items-center gap-1.5 text-sm transition
+          {% if liked %}text-brand{% else %}text-gray-500 hover:text-brand{% endif %}">
+        ♥ <span>{{ like_count }}</span>
+      </button>
+    </div>
+    {% endwith %}
+
+    <!-- Comments toggle (HTMX) -->
+    <button
+      hx-get="/reviews/{{ review.id }}/comments/"
+      hx-target="#comments-{{ review.id }}"
+      hx-swap="outerHTML"
+      class="text-sm text-gray-500 hover:text-white flex items-center gap-1.5 transition">
+      💬 {{ review.comment_set.count }}
+    </button>
+
+    {% if review.author == request.user %}
+      <a href="/reviews/{{ work_type }}/{{ work.slug }}/" class="text-xs text-gray-600 hover:text-gray-300 ml-auto">Modifica</a>
+      <form method="post" action="/reviews/{{ review.id }}/delete/" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="text-xs text-red-800 hover:text-red-400"
+          onclick="return confirm('Eliminare questa recensione?')">Elimina</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <!-- Comments placeholder (loaded on demand via HTMX) -->
+  <div id="comments-{{ review.id }}"></div>
+</div>

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}StefiNick Reviews{% endblock %}
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-2">Cosa stiamo guardando<span class="text-brand"> & leggendo</span>?</h1>
+<p class="text-gray-400 mb-8">Le ultime recensioni del gruppo.</p>
+
+{% if recent_films %}
+<section class="mb-10">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-lg font-semibold">Film Recenti</h2>
+    <a href="/films/" class="text-sm text-brand hover:underline">Tutti i film →</a>
+  </div>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    {% for film in recent_films %}
+      <a href="{{ film.get_absolute_url }}" class="group bg-gray-900 rounded-lg overflow-hidden hover:ring-1 hover:ring-brand transition">
+        {% if film.poster_url %}
+          <img src="{{ film.poster_url }}" alt="{{ film.title }}"
+            class="w-full aspect-[2/3] object-cover group-hover:opacity-90 transition">
+        {% else %}
+          <div class="w-full aspect-[2/3] bg-gray-800 flex items-center justify-center text-gray-600 text-sm text-center px-2">
+            {{ film.title }}
+          </div>
+        {% endif %}
+        <div class="p-2">
+          <p class="text-sm font-medium truncate">{{ film.title }}</p>
+          <p class="text-xs text-gray-500">{{ film.year }} · {{ film.review_count }} recension{{ film.review_count|pluralize:"e,i" }}</p>
+          {% if film.avg_rating %}
+            <p class="text-xs text-yellow-400 mt-0.5">★ {{ film.avg_rating|floatformat:1 }}</p>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if recent_books %}
+<section>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-lg font-semibold">Libri Recenti</h2>
+    <a href="/books/" class="text-sm text-brand hover:underline">Tutti i libri →</a>
+  </div>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    {% for book in recent_books %}
+      <a href="{{ book.get_absolute_url }}" class="group bg-gray-900 rounded-lg overflow-hidden hover:ring-1 hover:ring-brand transition">
+        {% if book.cover_url %}
+          <img src="{{ book.cover_url }}" alt="{{ book.title }}"
+            class="w-full aspect-[2/3] object-cover group-hover:opacity-90 transition">
+        {% else %}
+          <div class="w-full aspect-[2/3] bg-gray-800 flex items-center justify-center text-gray-600 text-sm text-center px-2">
+            {{ book.title }}
+          </div>
+        {% endif %}
+        <div class="p-2">
+          <p class="text-sm font-medium truncate">{{ book.title }}</p>
+          <p class="text-xs text-gray-500">{{ book.author }} · {{ book.review_count }} recension{{ book.review_count|pluralize:"e,i" }}</p>
+          {% if book.avg_rating %}
+            <p class="text-xs text-yellow-400 mt-0.5">★ {{ book.avg_rating|floatformat:1 }}</p>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if not recent_films and not recent_books %}
+  <div class="text-center py-24 text-gray-500">
+    <p class="text-5xl mb-4">🎬</p>
+    <p class="text-lg">Nessuna recensione ancora.</p>
+    <a href="/reviews/new/" class="mt-4 inline-block bg-brand hover:bg-green-700 text-white px-4 py-2 rounded font-medium transition">
+      Scrivi la prima recensione
+    </a>
+  </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% if results %}
+  <ul class="space-y-2">
+    {% for film in results %}
+      <li>
+        <a href="/reviews/select/film/?tmdb_id={{ film.tmdb_id }}"
+          class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 rounded-lg px-3 py-2 transition">
+          {% if film.poster %}
+            <img src="{{ film.poster }}" alt="{{ film.title }}" class="w-10 h-14 object-cover rounded flex-shrink-0">
+          {% else %}
+            <div class="w-10 h-14 bg-gray-700 rounded flex-shrink-0"></div>
+          {% endif %}
+          <div>
+            <p class="text-sm font-medium">{{ film.title }}</p>
+            <p class="text-xs text-gray-500">{{ film.year }}</p>
+          </div>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% elif query %}
+  <p class="text-gray-500 text-sm">No films found for "{{ query }}".</p>
+{% endif %}

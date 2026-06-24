@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}{% if existing %}Modifica recensione{% else %}Recensione{% endif %} — {{ work.title }}{% endblock %}
+{% block content %}
+
+<div class="max-w-xl">
+  <div class="flex items-start gap-4 mb-6">
+    {% with poster=work.image_url %}
+    {% if poster %}
+      <img src="{{ poster }}" alt="{{ work.title }}"
+        class="w-16 rounded object-cover flex-shrink-0">
+    {% endif %}
+    {% endwith %}
+    <div>
+      <p class="text-xs text-gray-500 uppercase tracking-wider">{% if work_type == "film" %}Film{% else %}Libro{% endif %}</p>
+      <h1 class="text-xl font-bold">{{ work.title }}</h1>
+      <p class="text-gray-400 text-sm">
+        {% if work_type == "film" %}{{ work.director }}{% else %}{{ work.author }}{% endif %}
+        {% if work.year %} · {{ work.year }}{% endif %}
+      </p>
+    </div>
+  </div>
+
+  <form method="post" class="space-y-5">
+    {% csrf_token %}
+
+    <!-- Star rating -->
+    <div>
+      <p class="text-sm text-gray-400 mb-2">Voto</p>
+      <div class="flex gap-1 flex-wrap" id="star-rating">
+        {% for value, label in form.rating.field.choices %}
+          <label class="cursor-pointer">
+            <input type="radio" name="rating" value="{{ value }}"
+              class="sr-only"
+              {% if form.rating.value == value|stringformat:"s" %}checked{% endif %}>
+            <span class="star-btn text-2xl text-gray-600 hover:text-yellow-400 transition select-none px-0.5
+              {% if form.rating.value == value|stringformat:"s" %}text-yellow-400{% endif %}"
+              data-value="{{ value }}">★</span>
+          </label>
+        {% endfor %}
+      </div>
+      {% if form.rating.errors %}
+        <p class="text-red-400 text-xs mt-1">{{ form.rating.errors|join:", " }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Review text -->
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">La tua recensione</label>
+      <textarea name="text" rows="7"
+        class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-green-500"
+        placeholder="Cosa ne pensi?">{{ form.text.value|default:"" }}</textarea>
+      {% if form.text.errors %}
+        <p class="text-red-400 text-xs mt-1">{{ form.text.errors|join:", " }}</p>
+      {% endif %}
+    </div>
+
+    <div class="flex gap-3 items-center">
+      <button type="submit"
+        class="bg-brand hover:bg-green-700 text-white font-semibold px-5 py-2 rounded transition">
+        {% if existing %}Aggiorna recensione{% else %}Pubblica recensione{% endif %}
+      </button>
+      <a href="{{ work.get_absolute_url }}" class="text-gray-400 hover:text-white text-sm">Annulla</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Highlight stars up to hovered/selected value
+  const stars = document.querySelectorAll('.star-btn');
+  function highlight(upTo) {
+    stars.forEach((s, i) => {
+      s.classList.toggle('text-yellow-400', i < upTo);
+      s.classList.toggle('text-gray-600', i >= upTo);
+    });
+  }
+  stars.forEach((s, i) => {
+    s.addEventListener('mouseenter', () => highlight(i + 1));
+    s.addEventListener('click', () => {
+      document.querySelector(`input[value="${s.dataset.value}"]`).checked = true;
+      highlight(i + 1);
+    });
+  });
+  document.getElementById('star-rating').addEventListener('mouseleave', () => {
+    const checked = document.querySelector('input[name="rating"]:checked');
+    highlight(checked ? parseInt(checked.value) : 0);
+  });
+  // Init from current value
+  const checked = document.querySelector('input[name="rating"]:checked');
+  if (checked) highlight(parseInt(checked.value));
+</script>
+{% endblock %}

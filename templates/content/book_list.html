@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Libri — StefiNick Reviews{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Libri</h1>
+  <a href="/reviews/new/?type=book" class="bg-brand hover:bg-green-700 text-white px-3 py-1.5 rounded text-sm font-medium transition">+ Aggiungi recensione</a>
+</div>
+{% if books %}
+  <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+    {% for book in books %}
+      <a href="{{ book.get_absolute_url }}" class="group bg-gray-900 rounded-lg overflow-hidden hover:ring-1 hover:ring-brand transition">
+        {% if book.cover_url %}
+          <img src="{{ book.cover_url }}" alt="{{ book.title }}"
+            class="w-full aspect-[2/3] object-cover group-hover:opacity-90 transition">
+        {% else %}
+          <div class="w-full aspect-[2/3] bg-gray-800 flex items-center justify-center text-gray-600 text-sm text-center px-2">
+            Nessuna copertina
+          </div>
+        {% endif %}
+        <div class="p-2">
+          <p class="text-sm font-medium truncate">{{ book.title }}</p>
+          <p class="text-xs text-gray-500">{{ book.author }}{% if book.year %} · {{ book.year }}{% endif %}</p>
+          <p class="text-xs text-gray-500 mt-0.5">{{ book.review_count }} recension{{ book.review_count|pluralize:"e,i" }}</p>
+          {% if book.avg_rating %}
+            <p class="text-xs text-yellow-400">★ {{ book.avg_rating|floatformat:1 }}</p>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-gray-500 text-center py-16">Nessun libro ancora. <a href="/reviews/new/?type=book" class="text-brand hover:underline">Aggiungi il primo.</a></p>
+{% endif %}
+{% endblock %}

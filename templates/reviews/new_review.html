@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Nuova recensione — StefiNick Reviews{% endblock %}
+{% block content %}
+
+<div class="max-w-xl">
+  <h1 class="text-2xl font-bold mb-6">Nuova recensione</h1>
+
+  <!-- Type toggle -->
+  <div class="flex gap-3 mb-6">
+    <a href="?type=film"
+      class="px-4 py-2 rounded text-sm font-medium transition
+        {% if media_type == 'film' %}bg-brand text-white{% else %}bg-gray-800 text-gray-400 hover:text-white{% endif %}">
+      Film
+    </a>
+    <a href="?type=book"
+      class="px-4 py-2 rounded text-sm font-medium transition
+        {% if media_type == 'book' %}bg-brand text-white{% else %}bg-gray-800 text-gray-400 hover:text-white{% endif %}">
+      Libro
+    </a>
+  </div>
+
+  {% if media_type == 'film' %}
+    <p class="text-gray-400 text-sm mb-3">Cerca un film:</p>
+    <input
+      type="text"
+      name="q"
+      placeholder="Titolo del film…"
+      autocomplete="off"
+      hx-get="/reviews/search/films/"
+      hx-trigger="keyup changed delay:300ms"
+      hx-target="#search-results"
+      hx-swap="innerHTML"
+      class="w-full bg-gray-800 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-green-500 mb-3">
+    <div id="search-results"></div>
+
+  {% else %}
+    <p class="text-gray-400 text-sm mb-3">Cerca un libro:</p>
+    <input
+      type="text"
+      name="q"
+      placeholder="Titolo o autore…"
+      autocomplete="off"
+      hx-get="/reviews/search/books/"
+      hx-trigger="keyup changed delay:300ms"
+      hx-target="#search-results"
+      hx-swap="innerHTML"
+      class="w-full bg-gray-800 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-green-500 mb-3">
+    <div id="search-results"></div>
+  {% endif %}
+</div>
+
+{% endblock %}

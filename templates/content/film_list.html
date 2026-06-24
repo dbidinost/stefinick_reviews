@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Film — StefiNick Reviews{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Film</h1>
+  <a href="/reviews/new/?type=film" class="bg-brand hover:bg-green-700 text-white px-3 py-1.5 rounded text-sm font-medium transition">+ Aggiungi recensione</a>
+</div>
+{% if films %}
+  <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+    {% for film in films %}
+      <a href="{{ film.get_absolute_url }}" class="group bg-gray-900 rounded-lg overflow-hidden hover:ring-1 hover:ring-brand transition">
+        {% if film.poster_url %}
+          <img src="{{ film.poster_url }}" alt="{{ film.title }}"
+            class="w-full aspect-[2/3] object-cover group-hover:opacity-90 transition">
+        {% else %}
+          <div class="w-full aspect-[2/3] bg-gray-800 flex items-center justify-center text-gray-600 text-sm text-center px-2">
+            Nessuna locandina
+          </div>
+        {% endif %}
+        <div class="p-2">
+          <p class="text-sm font-medium truncate">{{ film.title }}</p>
+          <p class="text-xs text-gray-500">{{ film.year }}{% if film.director %} · {{ film.director }}{% endif %}</p>
+          <p class="text-xs text-gray-500 mt-0.5">{{ film.review_count }} recension{{ film.review_count|pluralize:"e,i" }}</p>
+          {% if film.avg_rating %}
+            <p class="text-xs text-yellow-400">★ {{ film.avg_rating|floatformat:1 }}</p>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-gray-500 text-center py-16">Nessun film ancora. <a href="/reviews/new/?type=film" class="text-brand hover:underline">Aggiungi il primo.</a></p>
+{% endif %}
+{% endblock %}

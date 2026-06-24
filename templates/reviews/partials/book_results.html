@@ -1,0 +1,22 @@
+{% if results %}
+  <ul class="space-y-2">
+    {% for book in results %}
+      <li>
+        <a href="/reviews/select/book/?title={{ book.title|urlencode }}&author={{ book.author|urlencode }}&year={{ book.year|default:'' }}&isbn={{ book.isbn|urlencode }}&cover={{ book.cover|urlencode }}"
+          class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 rounded-lg px-3 py-2 transition">
+          {% if book.cover %}
+            <img src="{{ book.cover }}" alt="{{ book.title }}" class="w-10 h-14 object-cover rounded flex-shrink-0">
+          {% else %}
+            <div class="w-10 h-14 bg-gray-700 rounded flex-shrink-0"></div>
+          {% endif %}
+          <div>
+            <p class="text-sm font-medium">{{ book.title }}</p>
+            <p class="text-xs text-gray-500">{{ book.author }}{% if book.year %} · {{ book.year }}{% endif %}</p>
+          </div>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% elif query %}
+  <p class="text-gray-500 text-sm">No books found for "{{ query }}".</p>
+{% endif %}

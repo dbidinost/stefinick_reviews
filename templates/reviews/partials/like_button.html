@@ -1,0 +1,11 @@
+<div id="like-{{ review.id }}">
+  <button
+    hx-post="/reviews/{{ review.id }}/like/"
+    hx-target="#like-{{ review.id }}"
+    hx-swap="outerHTML"
+    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+    class="flex items-center gap-1.5 text-sm transition
+      {% if liked %}text-brand{% else %}text-gray-500 hover:text-brand{% endif %}">
+    ♥ <span>{{ like_count }}</span>
+  </button>
+</div>

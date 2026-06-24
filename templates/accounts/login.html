@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Accedi — StefiNick Reviews{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto">
+  <h1 class="text-2xl font-bold mb-6 text-center">Accedi</h1>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <p class="text-red-400 text-xs mt-1">{{ field.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit"
+      class="w-full bg-brand hover:bg-green-700 text-white font-semibold py-2 rounded transition">
+      Accedi
+    </button>
+  </form>
+  <p class="text-center text-sm text-gray-500 mt-6">
+    Nuovo? <a href="/accounts/register/" class="text-brand hover:underline">Registrati con un codice invito</a>
+  </p>
+</div>
+<style>
+  input[type=text], input[type=password] {
+    @apply w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-brand;
+    width: 100%; background: #1f2937; border: 1px solid #374151;
+    border-radius: 0.375rem; padding: 0.5rem 0.75rem; color: white;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Registrati — StefiNick Reviews{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto">
+  <h1 class="text-2xl font-bold mb-6 text-center">Crea account</h1>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">{{ field.label }}</label>
+        {% if field.field.widget.input_type == 'password' %}
+          <div class="relative">
+            {{ field }}
+            <button type="button" onclick="togglePassword(this)"
+              class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-700 focus:outline-none"
+              tabindex="-1" aria-label="Show password">
+              <svg class="eye-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+              <svg class="eye-off-icon w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 012.063-3.347M6.343 6.343A9.97 9.97 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.97 9.97 0 01-1.897 3.18M6.343 6.343L3 3m3.343 3.343l11.314 11.314M17.657 17.657L21 21"/>
+              </svg>
+            </button>
+          </div>
+        {% else %}
+          {{ field }}
+        {% endif %}
+        {% if field.errors %}
+          <p class="text-red-400 text-xs mt-1">{{ field.errors|join:", " }}</p>
+        {% endif %}
+        {% if field.help_text %}
+          <p class="text-gray-500 text-xs mt-1">{{ field.help_text }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit"
+      class="w-full bg-brand hover:bg-green-700 text-white font-semibold py-2 rounded transition">
+      Crea account
+    </button>
+  </form>
+  <p class="text-center text-sm text-gray-500 mt-6">
+    Hai già un account? <a href="/accounts/login/" class="text-brand hover:underline">Accedi</a>
+  </p>
+</div>
+<style>
+  input[type=text], input[type=email], input[type=password] {
+    width: 100%; border: 1px solid #d1d5db;
+    border-radius: 0.375rem; padding: 0.5rem 2.5rem 0.5rem 0.75rem; color: #111827;
+  }
+</style>
+<script>
+  function togglePassword(btn) {
+    const input = btn.closest('.relative').querySelector('input');
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.querySelector('.eye-icon').classList.toggle('hidden', isHidden);
+    btn.querySelector('.eye-off-icon').classList.toggle('hidden', !isHidden);
+  }
+</script>
+{% endblock %}
